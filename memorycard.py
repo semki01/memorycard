@@ -7,6 +7,9 @@ from PyQt5.QtWidgets import (
 
 from random import shuffle
 
+correct = 0
+ans_count = 0
+
 class Question():
     def __init__(self, question, right_answer, wrong1, wrong2, wrong3):
         self.question = question
@@ -20,14 +23,14 @@ app = QApplication([])
 
 # Создаем панель вопроса
 btn_OK = QPushButton('Ответить')
-lb_Question = QLabel('2+2')
+lb_Question = QLabel('Кому поклоняются папуины?')
 
 RadioGroupBox = QGroupBox("Варианты ответов")
 
-rbtn_1 = QRadioButton('5')
-rbtn_2 = QRadioButton('√16')
-rbtn_3 = QRadioButton('22')
-rbtn_4 = QRadioButton('Вот блин я тупой...')
+rbtn_1 = QRadioButton('Великому Ежу')
+rbtn_2 = QRadioButton('Богу Солнца')
+rbtn_3 = QRadioButton('Туалетному ёршику')
+rbtn_4 = QRadioButton('Колорадскому жуку')
 
 RadioGroup = QButtonGroup()
 RadioGroup.addButton(rbtn_1)
@@ -112,9 +115,15 @@ def show_question():
     rbtn_4.setChecked(False)
     RadioGroup.setExclusive(True)
 def next_question():
+    global correct
+    global ans_count
     window.question += 1
     if window.question >= len(question_list):
+        print('Всего:', ans_count)
+        print('Правильных:', correct)
+        print('Результат:', correct / ans_count * 100, '%')
         window.question = 0
+        shuffle(question_list) 
     q = question_list[window.question]
     ask(q)
 def show_correct(res):
@@ -122,17 +131,20 @@ def show_correct(res):
     show_result()
 
 def test():
+    global correct
+    global ans_count
+    ans_count += 1
     if answers[1].isChecked():
         show_correct('Верно!')
+        correct += 1
     elif answers[0].isChecked() or answers[2].isChecked() or answers[3].isChecked():
         show_correct('Неверно!')
-
 def click_OK():
     if btn_OK.text() == 'Ответить':
         test()
     else:
         next_question()
-q = Question('2+2', '4', '5', 'вот блин я тупой...', '22')
+q = Question('Кому поклоняются папуины?', 'Великому Ежу', 'Богу Солнца', 'Туалетному ёршику', 'Колорадскому жуку')
 question_list = []
 question_list.append(q)
 
